@@ -1,0 +1,161 @@
+CREATE DATABASE cs3200_project_1;
+
+USE cs3200_project_1;
+
+DROP TABLE IF EXISTS Output;
+DROP TABLE IF EXISTS Input;
+DROP TABLE IF EXISTS Region;
+DROP TABLE IF EXISTS Admin;
+DROP TABLE IF EXISTS BridgeTable2;
+DROP TABLE IF EXISTS Analyst;
+DROP TABLE IF EXISTS AB_Test;
+DROP TABLE IF EXISTS BridgeTable1;
+DROP TABLE IF EXISTS Feedback;
+DROP TABLE IF EXISTS Experience;
+DROP TABLE IF EXISTS Education;
+DROP TABLE IF EXISTS Document;
+DROP TABLE IF EXISTS Offer;
+DROP TABLE IF EXISTS Resume;
+DROP TABLE IF EXISTS Job;
+DROP TABLE IF EXISTS User;
+
+CREATE TABLE User (
+    UserID VARCHAR(50) PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE Job (
+    JobID VARCHAR(50) PRIMARY KEY,
+    Company VARCHAR(100),
+    Title VARCHAR(100),
+    UserID VARCHAR(50),
+    FOREIGN KEY (UserID) REFERENCES User(UserID) ON DELETE SET NULL
+);
+
+CREATE TABLE Resume (
+    ResumeID VARCHAR(50) PRIMARY KEY,
+    ResumeScore INT,
+    VersionNum INT,
+    JobID VARCHAR(50),
+    FOREIGN KEY (JobID) REFERENCES Job(JobID) ON DELETE SET NULL
+);
+
+CREATE TABLE Offer (
+    offerID VARCHAR(50) PRIMARY KEY,
+    Organization VARCHAR(50),
+    SALARY INT NOT NULL,
+    ResumeID VARCHAR(50),
+    FOREIGN KEY (ResumeID) REFERENCES Resume(ResumeID) ON DELETE SET NULL
+);
+
+CREATE TABLE Document (
+    DocID VARCHAR(50) PRIMARY KEY,
+    LinkedinURL VARCHAR(50),
+    Contents TEXT,
+    UserID VARCHAR(50),
+    FOREIGN KEY (UserID) REFERENCES User(UserID) ON DELETE SET NULL
+);
+
+CREATE TABLE Education (
+    EduID VARCHAR(50) PRIMARY KEY,
+    Institution VARCHAR(50),
+    Grade INT,
+    Credential TEXT,
+    UserID VARCHAR(50),
+    FOREIGN KEY (UserID) REFERENCES User(UserID) ON DELETE SET NULL
+);
+
+CREATE TABLE Experience (
+    ExpID VARCHAR(50) PRIMARY KEY,
+    Organization VARCHAR(50),
+    Salary INT,
+    Duration INT,
+    UserID VARCHAR(50),
+    FOREIGN KEY (UserID) REFERENCES User(UserID) ON DELETE SET NULL
+);
+
+CREATE TABLE Feedback (
+    FeedbackID VARCHAR(50) PRIMARY KEY,
+    Comment TEXT,
+    Rating INT,
+    UserID VARCHAR(50) NOT NULL,
+    Time DATE,
+    FOREIGN KEY (UserID) REFERENCES User(UserID) ON DELETE CASCADE
+);
+
+CREATE TABLE BridgeTable1 (
+    userID VARCHAR(50),
+    feedbackID VARCHAR(50),
+    PRIMARY KEY (userID, feedbackID),
+    FOREIGN KEY (userID) REFERENCES User(UserID) ON DELETE CASCADE,
+    FOREIGN KEY (feedbackID) REFERENCES Feedback(FeedbackID) ON DELETE CASCADE
+);
+
+CREATE TABLE AB_Test (
+    test_ID VARCHAR(50) PRIMARY KEY,
+    favored_ui BOOLEAN,
+    retention_1 INT,
+    retention_2 INT
+);
+
+CREATE TABLE Analyst (
+    AnalystID VARCHAR(50) PRIMARY KEY,
+    email VARCHAR(50),
+    test_ID VARCHAR(50),
+    FOREIGN KEY (test_ID) REFERENCES AB_Test(test_ID) ON DELETE SET NULL
+);
+
+CREATE TABLE BridgeTable2 (
+    AnalystID VARCHAR(50),
+    FeedbackID VARCHAR(50),
+    PRIMARY KEY (AnalystID, FeedbackID),
+    FOREIGN KEY (AnalystID) REFERENCES Analyst(AnalystID) ON DELETE CASCADE,
+    FOREIGN KEY (FeedbackID) REFERENCES Feedback(FeedbackID) ON DELETE CASCADE
+);
+
+CREATE TABLE Admin (
+    AdminID VARCHAR(50) PRIMARY KEY,
+    Name VARCHAR(50),
+    Email VARCHAR(50),
+    Uptime DOUBLE PRECISION
+);
+
+CREATE TABLE Region (
+    RegionID VARCHAR(50) PRIMARY KEY,
+    Name VARCHAR(50),
+    Status VARCHAR(50),
+    AdminID VARCHAR(50),
+    FOREIGN KEY (AdminID) REFERENCES Admin(AdminID) ON DELETE SET NULL
+);
+
+CREATE TABLE Input (
+    InputID VARCHAR(50) PRIMARY KEY,
+    Time TIME,
+    Content TEXT,
+    RegionID VARCHAR(50),
+    UserID VARCHAR(50),
+    FOREIGN KEY (UserID) REFERENCES User(UserID) ON DELETE SET NULL,
+    FOREIGN KEY (RegionID) REFERENCES Region(RegionID) ON DELETE SET NULL
+);
+
+CREATE TABLE Output (
+    InputID VARCHAR(50),
+    OutputID VARCHAR(50),
+    OutputData TEXT,
+    Timestamp TIME,
+    PRIMARY KEY (InputID, OutputID),
+    FOREIGN KEY (InputID) REFERENCES Input(InputID) ON DELETE CASCADE
+);
+
+
+
+
+
+
+
+
+
+
+
+

@@ -9,10 +9,10 @@ ngos = Blueprint("ngos", __name__)
 
 # Get all NGOs with optional filtering by country, focus area, and founding year
 # Example: /ngo/ngos?country=United%20States&focus_area=Environmental%20Conservation
-@ngos.route("/ngos", methods=["GET"])
+@ngos.route("/users", methods=["GET"])
 def get_all_ngos():
     try:
-        current_app.logger.info('Starting get_all_ngos request')
+        current_app.logger.info('Getting all users request')
         cursor = db.get_db().cursor()
 
         # Note: Query parameters are added after the main part of the URL.
@@ -21,26 +21,11 @@ def get_all_ngos():
         # founding_year is the query param.
 
         # Get query parameters for filtering
-        country = request.args.get("country")
-        focus_area = request.args.get("focus_area")
-        founding_year = request.args.get("founding_year")
-
-        current_app.logger.debug(f'Query parameters - country: {country}, focus_area: {focus_area}, founding_year: {founding_year}')
 
         # Prepare the Base query
-        query = "SELECT * FROM WorldNGOs WHERE 1=1"
+        query = "SELECT * FROM User"
         params = []
-
-        # Add filters if provided
-        if country:
-            query += " AND Country = %s"
-            params.append(country)
-        if focus_area:
-            query += " AND Focus_Area = %s"
-            params.append(focus_area)
-        if founding_year:
-            query += " AND Founding_Year = %s"
-            params.append(founding_year)
+        filters = []
 
         current_app.logger.debug(f'Executing query: {query} with params: {params}')
         cursor.execute(query, params)

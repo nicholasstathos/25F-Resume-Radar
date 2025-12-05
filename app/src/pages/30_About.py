@@ -4,19 +4,28 @@ from modules.nav import SideBarLinks
 
 SideBarLinks()
 
-st.write("# About this App")
+st.write("# About Resume Radar...")
 
 st.markdown(
     """
-    This is a demo app for Data and Software in International Government and Politics Dialogue 2025 Project Course.  
-
-    The goal of this demo is to provide information on the tech stack 
-    being used as well as demo some of the features of the various platforms. 
-
-    Stay tuned for more information and features to come!
+    As CS and DS majors, we know the job market at the moment is “cooked”. 
+    
+    Hundreds of applications and hundreds fewer replies make you question every aspect of your application. 
+    
+    What if there was a way you could see what resumes got people the jobs you want and get feedback based on them for yours? 
+    
+    Introducing ResumeRadar, the platform that allows you to see what resumes work and replicate them for yourself. 
+    
+    While many Resume improvement tools exist, ResumeRadar would be the first of its kind to base feedback on user data and outcomes rather than simple grammatical conventions. 
+    
+    ResumeRadar allows you to understand what it takes to get hired and see in real time what works for other users. 
+    
+    When someone uploads a resume to ResumeRadar, their resume gets added to our dataset of applicants. 
+    
+    When a user gets hired, we make note of what worked for them and relay that feedback to you. 
     """
 )
 
 # Add a button to return to home page
-if st.button("Return to Home", type="primary"):
+if st.button("Home", type="primary"):
     st.switch_page("Home.py")
