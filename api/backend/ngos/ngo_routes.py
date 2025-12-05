@@ -3,14 +3,14 @@ from backend.db_connection import db
 from mysql.connector import Error
 from flask import current_app
 
-# Create a Blueprint for NGO routes
+# BluePrint for the new grad persona 
 ngos = Blueprint("ngos", __name__)
 
 
 # Get all NGOs with optional filtering by country, focus area, and founding year
 # Example: /ngo/ngos?country=United%20States&focus_area=Environmental%20Conservation
 @ngos.route("/users", methods=["GET"])
-def get_all_ngos():
+def get_all_users():
     try:
         current_app.logger.info('Getting all users request')
         cursor = db.get_db().cursor()
@@ -41,28 +41,17 @@ def get_all_ngos():
 
 # Get detailed information about a specific NGO including its projects and donors
 # Example: /ngo/ngos/1
-@ngos.route("/ngos/<int:ngo_id>", methods=["GET"])
-def get_ngo(ngo_id):
+@ngos.route("/users/<int:user_id>", methods=["GET"])
+def get_ngo(user_id):
     try:
         cursor = db.get_db().cursor()
 
         # Get NGO details
-        cursor.execute("SELECT * FROM WorldNGOs WHERE NGO_ID = %s", (ngo_id,))
+        cursor.execute("SELECT * FROM User WHERE UserID = %s", (user_id,))
         ngo = cursor.fetchone()
 
         if not ngo:
             return jsonify({"error": "NGO not found"}), 404
-
-        # Get associated projects then donors
-        cursor.execute("SELECT * FROM Projects WHERE NGO_ID = %s", (ngo_id,))
-        projects = cursor.fetchall()
-
-        cursor.execute("SELECT * FROM Donors WHERE NGO_ID = %s", (ngo_id,))
-        donors = cursor.fetchall()
-
-        # Combine data from multiple related queries into one object to return (after jsonify)
-        ngo["projects"] = projects
-        ngo["donors"] = donors
 
         cursor.close()
         return jsonify(ngo), 200
@@ -73,42 +62,41 @@ def get_ngo(ngo_id):
 # Create a new NGO
 # Required fields: Name, Country, Founding_Year, Focus_Area, Website
 # Example: POST /ngo/ngos with JSON body
-@ngos.route("/ngos", methods=["POST"])
-def create_ngo():
+@ngos.route("/feedback/<int:user_id>", methods=["GET"])
+def get_feedback(user_id):
     try:
-        data = request.get_json()
-
-        # Validate required fields
-        required_fields = ["Name", "Country", "Founding_Year", "Focus_Area", "Website"]
-        for field in required_fields:
-            if field not in data:
-                return jsonify({"error": f"Missing required field: {field}"}), 400
 
         cursor = db.get_db().cursor()
 
-        # Insert new NGO
-        query = """
-        INSERT INTO WorldNGOs (Name, Country, Founding_Year, Focus_Area, Website)
-        VALUES (%s, %s, %s, %s, %s)
-        """
-        cursor.execute(
-            query,
-            (
-                data["Name"],
-                data["Country"],
-                data["Founding_Year"],
-                data["Focus_Area"],
-                data["Website"],
-            ),
-        )
+        # Get NGO details
+        cursor.execute("SELECT * FROM Feedback WHERE UserID = %s", (user_id))
 
-        db.get_db().commit()
-        new_ngo_id = cursor.lastrowid
-        cursor.close()
+        feedback = cursor.fetchall()
 
         return (
-            jsonify({"message": "NGO created successfully", "ngo_id": new_ngo_id}),
-            201,
+            jsonify(feedback),
+            200,
+        )
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+# Create a new NGO
+# Required fields: Name, Country, Founding_Year, Focus_Area, Website
+# Example: POST /ngo/ngos with JSON body
+@ngos.route("/jobs/<string:keyword>", methods=["GET"])
+def get_jobs_by_keyword(keyword):
+    try:
+        cursor = db.get_db().cursor()
+
+        # Get jobs by keyword
+        cursor.execute("SELECT * FROM Job WHERE Title LIKE '%{}%' OR Company LIKE '%{}%';".format(keyword, keyword))
+
+        feedback = cursor.fetchall()
+
+        return (
+            jsonify(feedback),
+            200,
         )
     except Error as e:
         return jsonify({"error": str(e)}), 500
@@ -171,6 +159,27 @@ def get_ngo_projects(ngo_id):
         cursor.close()
 
         return jsonify(projects), 200
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+# Create a new NGO
+# Required fields: Name, Country, Founding_Year, Focus_Area, Website
+# Example: POST /ngo/ngos with JSON body
+@ngos.route("/jobs/<int:JobID>, <int:ResumeID>", methods=["GET"])
+def get_match_score(keyword):
+    try:
+        cursor = db.get_db().cursor()
+
+        # Get jobs by keyword
+        cursor.execute("SELECT * FROM Job WHERE Title LIKE '%{}%' OR Company LIKE '%{}%';".format(keyword, keyword))
+
+        feedback = cursor.fetchall()
+
+        return (
+            jsonify(feedback),
+            200,
+        )
     except Error as e:
         return jsonify({"error": str(e)}), 500
 
