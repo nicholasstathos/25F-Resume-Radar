@@ -1,6 +1,7 @@
 import logging
 logger = logging.getLogger(__name__)
 import datetime as dt
+import requests
 
 import streamlit as st
 from modules.nav import SideBarLinks
@@ -9,22 +10,34 @@ from streamlit_pdf_viewer import pdf_viewer
 
 st.set_page_config(layout = 'wide')
 
-# Show appropriate sidebar links for the role of the currently logged in user
 SideBarLinks()
 
-#{st.session_state['affiliate']}
-
-st.title(f"Welcome, {st.session_state['first_name']} from.")
+st.title(f"Welcome, {st.session_state['first_name']}")
 st.write('')
 st.write('')
 st.write('### We took a look at your resume....')
 
-score = st.metric(f'ResumeScore','91.4%',str(dt.datetime.now()),delta_color='normal')
+try:
+    user_id = st.session_state.get('user_id')  
+    response = requests.get(f"http://localhost:4000/sarah/users/{user_id}")
+    
+    if response.status_code == 200:
+        user_data = response.json()
+        email = user_data.get('email')
+        resumes = user_data.get('resumes', [])
+        
+        # Get the resume score from the first resume
+        resume_score = resumes[0]['resume_score'] if resumes else 0
+        score = st.metric(f'ResumeScore', f'{resume_score}%', str(dt.datetime.now()), delta_color='normal')
+    else:
+        st.error("Failed to fetch resume data")
+        resume_score = 0
+except Exception as e:
+    st.error(f"Error calling API: {str(e)}")
+    resume_score = 0
 
 with open("/Users/nicholas/Documents/GitHub/25F-Resume-Radar/app/src/assets/Nicholas_Stathos_Resume_Tech.pdf", "rb") as file:
     st.pdf(file.read(), height=700)
-
-import streamlit as st
 
 st.markdown("""
 <style>

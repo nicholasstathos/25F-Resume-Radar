@@ -51,7 +51,7 @@ INSERT INTO Region (RegionID, Name, Status, AdminID) VALUES
 ('region_048', 'US-Central-Minneapolis', 'Running', 'admin_024'),
 ('region_049', 'US-Central-Kansas-City', 'Running', 'admin_024'),
 ('region_050', 'US-South-Charlotte', 'Running', 'admin_025'),
-('region_051', 'EU-West-Brussels', 'Running', 'admin_026'),
+('region_051', 'EU-West-Brussels', 'Down', 'admin_026'),
 ('region_052', 'EU-Central-Zurich', 'Running', 'admin_026'),
 ('region_053', 'Asia-East-Taipei', 'Running', 'admin_027'),
 ('region_054', 'Africa-Cape-Town', 'Running', 'admin_028'),
