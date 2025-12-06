@@ -62,22 +62,6 @@ def fetch_activity(user_id):
     except Error as e:
         return jsonify({"error": str(e)}), 500
     
-@jason.route("/regions/<string:region_id>", methods=["DELETE"])
-def delete_region(region_id):
-    try:
-        cursor = db.get_db().cursor()
-        cursor.execute("SELECT * FROM Region WHERE RegionID = %s", (region_id,))
-        region = cursor.fetchone()
-
-        if not region:
-            return jsonify({"error": f"Region '{region_id}' not found"}), 404
-        cursor.execute("DELETE FROM Region WHERE RegionID = %s", (region_id,))
-        db.get_db().commit()
-        cursor.close()
-
-        return jsonify({"message": f"Region '{region_id}' deleted successfully"}), 200
-    except Error as e:
-        return jsonify({"error": str(e)}), 500
     
 #To clarify because this one is a little goofy, it would force all cached responses to be deleted in the event of a critical issue with the LLM. 
 @jason.route("/nuclear-button", methods=["DELETE"])
@@ -96,6 +80,53 @@ def nuclear_button():
             "status": "All outputs are donezo",
             "outputs_destroyed": deleted_count
         }), 200
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+    
+@jason.route("/users_delete/<string:user_id>", methods=["DELETE"])
+def delete_user(user_id):
+    try:
+        cursor = db.get_db().cursor()
+        cursor.execute("SELECT * FROM User WHERE UserID = %s", (user_id,))
+        user = cursor.fetchone()
+
+        if not user:
+            return jsonify({"error": f"User {user_id} not found"}), 404
+        
+        cursor.execute("DELETE FROM User WHERE UserID = %s", (user_id,))
+        db.get_db().commit()
+        cursor.close()
+
+        return jsonify({"message": f"User {user_id} deleted successfully"}), 200
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+@jason.route("/regions/<string:region_id>/status", methods=["PUT"])
+def update_region_status(region_id):
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"error": "No data"}), 400
+        
+        status = data.get('status')
+        
+        if not status:
+            return jsonify({"error": "You need a status"}), 400
+        
+        cursor = db.get_db().cursor()
+        
+        cursor.execute("SELECT RegionID FROM Region WHERE RegionID = %s", (region_id,))
+        if not cursor.fetchone():
+            cursor.close()
+            return jsonify({"error": "Region not found"}), 404
+        
+        cursor.execute("UPDATE Region SET Status = %s WHERE RegionID = %s", (status, region_id))
+        db.get_db().commit()
+        cursor.close()
+        
+        return jsonify({"message": "Region status change worked!"}), 200
     except Error as e:
         return jsonify({"error": str(e)}), 500
 

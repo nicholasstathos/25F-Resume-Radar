@@ -1,64 +1,77 @@
 import logging
 logger = logging.getLogger(__name__)
+
 import streamlit as st
-import pandas as pd
-from sklearn import datasets
-from sklearn.ensemble import RandomForestClassifier
-from streamlit_extras.app_logo import add_logo
 from modules.nav import SideBarLinks
+import requests
+
+st.set_page_config(layout='wide')
 
 SideBarLinks()
 
-st.write("""
-# Simple Iris Flower Prediction App
+st.title(f"Welcome {st.session_state['first_name']}")
+st.write('### Job Search')
 
-This example is borrowed from [The Data Professor](https://github.com/dataprofessor/streamlit_freecodecamp/tree/main/app_7_classification_iris)
-         
-This app predicts the **Iris flower** type!
-""")
+st.write('---')
 
-st.sidebar.header('User Input Parameters')
+keyword_search = st.text_input("Search by title or company for jobs!", placeholder="ex Engineer")
 
-# Below, different user inputs are defined.  When you view the UI, 
-# notice that they are in the sidebar. 
-def user_input_features():
-    sepal_length = st.sidebar.slider('Sepal length', 4.3, 7.9, 5.4)
-    sepal_width = st.sidebar.slider('Sepal width', 2.0, 4.4, 3.4)
-    petal_length = st.sidebar.slider('Petal length', 1.0, 6.9, 1.3)
-    petal_width = st.sidebar.slider('Petal width', 0.1, 2.5, 0.2)
-    data = {'sepal_length': sepal_length,
-            'sepal_width': sepal_width,
-            'petal_length': petal_length,
-            'petal_width': petal_width}
-    features = pd.DataFrame(data, index=[0])
-    return features
+if st.button("Search Jobs", type="primary", use_container_width=True):
+    if keyword_search:
+        try:
+            response = requests.get(f"http://host.docker.internal:4000/sarah/jobs/search/{keyword_search}")
+            
+            if response.status_code == 200:
+                jobs = response.json()
+                
+                if jobs:
+                    st.success(f"Found {len(jobs)} jobs matching {keyword_search}")
+                    st.write("")
+                    
+                    for job in jobs:
+                        job_id = job.get('JobID', 'N/A')
+                        title = job.get('Title', 'No title')
+                        company = job.get('Company', 'No company')
+                        user_id = job.get('UserID', 'N/A')
+                        avg_score = job.get('avg_resume_score')
+                        
+                        score_display = f"{avg_score}%" if avg_score else "No resumes"
+                        
+                        st.markdown(f"""
+                        <div style="
+                            padding: 20px;
+                            border-left: 5px solid #1976d2;
+                            border-radius: 8px;
+                            background-color: #f8f9fa;
+                            margin-bottom: 15px;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        ">
+                            <h3 style="color: #333; margin-top: 0;">💼 {title}</h3>
+                            <p style="color: #666; margin: 8px 0; font-size: 16px;">
+                                <strong>Company:</strong> {company}
+                            </p>
+                            <p style="color: #666; margin: 8px 0;">
+                                <strong>Job ID:</strong> {job_id}
+                            </p>
+                            <p style="color: #666; margin: 8px 0;">
+                                <strong>Posted by User:</strong> {user_id}
+                            </p>
+                            <p style="color: #666; margin: 8px 0;">
+                                <strong>Average Resume Score:</strong> {score_display}
+                            </p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                else:
+                    st.info(f"No jobs found matching {keyword_search}")
+                    
+            else:
+                st.error(f"Error searching jobs: {response.status_code}")
+                
+        except requests.exceptions.ConnectionError:
+            st.error("Cant connect to API server")
+        except Exception as e:
+            st.error(f"Error: {str(e)}")
+    else:
+        st.warning("Please enter a keyword to search")
 
-# get a data frame with the input features from the user
-df = user_input_features()
-
-# show the exact values the user entered in a table.
-st.subheader('User Input parameters')
-st.write(df)
-
-# load the standard iris dataset and generate a 
-# random forest classifier 
-iris = datasets.load_iris()
-X = iris.data
-Y = iris.target
-clf = RandomForestClassifier()
-
-# fit the model
-clf.fit(X, Y)
-
-# use the values entered by the user for prediction
-prediction = clf.predict(df)
-prediction_proba = clf.predict_proba(df)
-
-st.subheader('Class labels and their corresponding index number')
-st.write(iris.target_names)
-
-st.subheader('Prediction')
-st.write(iris.target_names[prediction])
-
-st.subheader('Prediction Probability')
-st.write(prediction_proba)
+st.write('---')

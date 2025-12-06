@@ -109,3 +109,84 @@ def get_user_email_and_resume(user_id):
     except Error as e:
         return jsonify({"error": str(e)}), 500
     
+
+@sarah.route("/resume", methods=["GET"])
+def get_all_resumes():
+    try:
+        cursor = db.get_db().cursor()
+        cursor.execute("SELECT * FROM Resume LIMIT 1")
+        resumes = cursor.fetchall()
+        cursor.close()
+        return jsonify(resumes), 200
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+    
+@sarah.route("/users/<string:user_id>", methods=["PUT"])
+def update_user_profile(user_id):
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        name = data.get('name')
+        email = data.get('email')
+        if not name or not email:
+            return jsonify({"error": "Name and email are required"}), 400
+        
+        cursor = db.get_db().cursor()
+        cursor.execute("SELECT UserID FROM User WHERE UserID = %s", (user_id,))
+        user = cursor.fetchone()
+        
+        if not user:
+            cursor.close()
+            return jsonify({"error": "User not found"}), 404
+        cursor.execute("SELECT UserID FROM User WHERE Email = %s AND UserID != %s", (email, user_id))
+        existing = cursor.fetchone()
+        
+        if existing:
+            cursor.close()
+            return jsonify({"error": "Email already in use"}), 409
+        cursor.execute("""
+            UPDATE User 
+            SET Name = %s, Email = %s
+            WHERE UserID = %s
+        """, (name, email, user_id))
+        
+        db.get_db().commit()
+        cursor.close()
+        
+        return jsonify({"message": "User profile updated successfully"}), 200
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+@sarah.route("/documents", methods=["POST"])
+def create_document():
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        doc_id = data.get('doc_id')
+        linkedin_url = data.get('linkedin_url')
+        contents = data.get('contents')
+        user_id = data.get('user_id')
+        
+        if not doc_id:
+            return jsonify({"error": "Document ID is required"}), 400
+        
+        cursor = db.get_db().cursor()
+        
+        cursor.execute("""
+            INSERT INTO Document (DocID, LinkedinURL, Contents, UserID)
+            VALUES (%s, %s, %s, %s)
+        """, (doc_id, linkedin_url, contents, user_id))
+        
+        db.get_db().commit()
+        cursor.close()
+        
+        return jsonify({"message": "Document created successfully", "doc_id": doc_id}), 201
+    except Error as e:
+        return jsonify({"error": str(e)}), 500

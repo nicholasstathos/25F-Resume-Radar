@@ -44,38 +44,31 @@ st.write('#### Welcome to Resume Radar! Here are some personas to choose from to
 # functionality, we put a button on the screen that the user 
 # can click to MIMIC logging in as that mock user. 
 
-if st.button("Act as Mark, a Senior SWE at Meta", 
+if st.button("Act as Sarah, a Newly Graduated Student", 
             type = 'primary', 
             use_container_width=True):
     # when user clicks the button, they are now considered authenticated
     st.session_state['authenticated'] = True
     # we set the role of the current user
-    st.session_state['role'] = 'pol_strat_advisor'
+    st.session_state['role'] = 'Student'
     # we add the first name of the user (so it can be displayed on 
     # subsequent pages). 
-    st.session_state['first_name'] = 'John'
+    st.session_state['first_name'] = 'Sarah'
+    st.session_state['user_id'] = 1
 
-    st.session_state['affiliate'] = 'Meta'
+    st.session_state['affiliate'] = 'Northeastern University'
     # finally, we ask streamlit to switch to another page, in this case, the 
     # landing page for this particular user type
-    logger.info("Logging in as Political Strategy Advisor Persona")
+    logger.info("Logging in as Sarah")
     st.switch_page('pages/00_Pol_Strat_Home.py')
 
-if st.button('Act as Sarah, a Newly Graduated Student', 
-            type = 'primary', 
-            use_container_width=True):
-    st.session_state['authenticated'] = True
-    st.session_state['role'] = 'usaid_worker'
-    st.session_state['first_name'] = 'Mohammad'
-    st.session_state['affiliate'] = 'Northeastern University'
-    st.switch_page('pages/10_USAID_Worker_Home.py')
 
-if st.button('Act as System Administrator', 
+if st.button('Act as Jason, System Administrator', 
             type = 'primary', 
             use_container_width=True):
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'administrator'
-    st.session_state['first_name'] = 'SysAdmin'
+    st.session_state['first_name'] = 'Jason'
     st.switch_page('pages/20_Admin_Home.py')
 
 
