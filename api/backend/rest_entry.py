@@ -10,6 +10,11 @@ from backend.ngos.ngo_routes import ngos
 from backend.ngos.sarah_routes import sarah
 from backend.ngos.jason_routes import jason
 
+from backend.anya.analytics_routes import anya_analytics_bp
+from backend.anya.abtest_routes import anya_abtest_bp
+from backend.anya.feedback_routes import anya_feedback_bp
+
+
 def create_app():
     app = Flask(__name__)
 
@@ -47,6 +52,7 @@ def create_app():
     app.logger.info("current_app(): starting the database connection")
     db.init_app(app)
 
+
     # Register the routes from each Blueprint with the app object
     # and give a url prefix to each
     app.logger.info("create_app(): registering blueprints with Flask app object.")
@@ -54,6 +60,36 @@ def create_app():
     app.register_blueprint(ngos, url_prefix="/ngo")
     app.register_blueprint(sarah, url_prefix='/sarah')
     app.register_blueprint(jason, url_prefix='/jason')
+    
+    print("\n=== DEBUG: Checking Anya Blueprints ===")
+
+    try:
+        print("analytics_bp =", anya_analytics_bp)
+        print("abtest_bp =", anya_abtest_bp)
+        print("feedback_bp =", anya_feedback_bp)
+    except Exception as e:
+            print("IMPORT ERROR while loading Anya blueprints:", e)
+
+    print("\n=== DEBUG: Registering Anya Blueprints ===")
+
+    try:
+        app.register_blueprint(anya_analytics_bp, url_prefix="/anya")
+        print("Registered analytics_bp")
+    except Exception as e:
+        print("ERROR registering analytics_bp:", e)
+
+    try:
+        app.register_blueprint(anya_abtest_bp, url_prefix="/anya")
+        print("Registered abtest_bp")
+    except Exception as e:
+        print("ERROR registering abtest_bp:", e)
+
+    try:
+        app.register_blueprint(anya_feedback_bp, url_prefix="/anya")
+        print("Registered feedback_bp")
+    except Exception as e:
+        print("ERROR registering feedback_bp:", e)
+
 
     # Don't forget to return the app object
     return app

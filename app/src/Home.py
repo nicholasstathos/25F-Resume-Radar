@@ -8,6 +8,8 @@ import logging
 logging.basicConfig(format='%(filename)s:%(lineno)s:%(levelname)s -- %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+print(">>> HOME.PY LOADED SUCCESSFULLY <<<")
+
 # import the main streamlit library as well
 # as SideBarLinks function from src/modules folder
 import streamlit as st
@@ -70,6 +72,18 @@ if st.button('Act as Jason, System Administrator',
     st.session_state['role'] = 'administrator'
     st.session_state['first_name'] = 'Jason'
     st.switch_page('pages/20_Admin_Home.py')
+    
+    
+if st.button('Act as Anya, Data Analyst', 
+            type='primary', 
+            use_container_width=True):
+    
+    st.session_state['authenticated'] = True
+    st.session_state['role'] = 'Analyst'
+    st.session_state['first_name'] = 'Anya'
+    st.session_state['user_id'] = 3  
+    
+    st.switch_page('pages/40_Anya_Home.py')
 
 
 

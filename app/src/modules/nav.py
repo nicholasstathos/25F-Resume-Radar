@@ -107,7 +107,10 @@ def SideBarLinks(show_home=False):
             sarahNav()
         if st.session_state["role"] == "administrator":
             AdminPageNav()
+        if st.session_state["role"] == "Analyst":
+            st.sidebar.page_link("pages/40_Anya_Home.py", label="Analyst Home", icon="📊")
 
+    
     AboutPageNav()
 
     if st.session_state["authenticated"]:
