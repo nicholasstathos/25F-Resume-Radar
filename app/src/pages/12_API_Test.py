@@ -1,4 +1,4 @@
-2import logging
+import logging
 logger = logging.getLogger(__name__)
 import streamlit as st
 import requests
