@@ -5,20 +5,8 @@ from flask import current_app
 
 jason = Blueprint("jason", __name__)
 
-
-# ex: /jason/regions
-@jason.route("/regions", methods=["GET"])
-def get_all_regions():
-    try:
-        cursor = db.get_db().cursor()
-        cursor.execute("SELECT * FROM Region")
-        regions = cursor.fetchall()
-        cursor.close()
-        return jsonify(regions), 200
-    except Error as e:
-        return jsonify({"error": str(e)}), 500
     
-
+#Addressed in ui
 @jason.route("/regions/status/<string:status>", methods=["GET"])
 def get_regions_by_status(status):
     try:
@@ -33,6 +21,7 @@ def get_regions_by_status(status):
         return jsonify({"error": str(e)}), 500
     
 
+#Addressed in ui
 @jason.route("/fetch_activity/<string:user_id>", methods=["GET"])
 def fetch_activity(user_id):
     try:
@@ -62,7 +51,7 @@ def fetch_activity(user_id):
     except Error as e:
         return jsonify({"error": str(e)}), 500
     
-    
+#Addressed in ui
 #To clarify because this one is a little goofy, it would force all cached responses to be deleted in the event of a critical issue with the LLM. 
 @jason.route("/nuclear-button", methods=["DELETE"])
 def nuclear_button():
@@ -83,6 +72,7 @@ def nuclear_button():
     except Error as e:
         return jsonify({"error": str(e)}), 500
     
+#ui
 @jason.route("/users_delete/<string:user_id>", methods=["DELETE"])
 def delete_user(user_id):
     try:
@@ -102,6 +92,8 @@ def delete_user(user_id):
         return jsonify({"error": str(e)}), 500
     
 
+
+#In ui
 @jason.route("/regions/<string:region_id>/status", methods=["PUT"])
 def update_region_status(region_id):
     try:

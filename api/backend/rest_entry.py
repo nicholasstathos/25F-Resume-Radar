@@ -6,7 +6,7 @@ from logging.handlers import RotatingFileHandler
 
 from backend.db_connection import db
 from backend.simple.simple_routes import simple_routes
-from backend.ngos.ngo_routes import ngos
+from api.backend.ngos.anya_routes import ngos
 from backend.ngos.sarah_routes import sarah
 from backend.ngos.jason_routes import jason
 
