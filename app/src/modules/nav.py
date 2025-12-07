@@ -15,9 +15,10 @@ def AboutPageNav():
 
 
 def sarahNav():
-    st.sidebar.page_link(
-        "pages/13_Classification.py", label="Job Search Tool", icon="🔍"
-    )
+    st.sidebar.page_link("pages/02_Resume_Output.py", label="Our Feedback", icon="🧠")
+    st.sidebar.page_link("pages/13_Job_Search.py", label="Job Search Tool", icon="🔍")
+    st.sidebar.page_link("pages/04_All_Jobs.py", label="All Jobs", icon="🕵")
+    st.sidebar.page_link("pages/10_sarah_import_resume.py", label="Add Document", icon="📄")
 
 
 #### ------------------------ Examples for Role of pol_strat_advisor ------------------------
@@ -73,6 +74,9 @@ def AdminPageNav():
     st.sidebar.page_link(
         "pages/21_ML_Model_Mgmt.py", label="User Activity Search", icon="🏢"
     )
+    st.sidebar.page_link("pages/15_Add_NGO.py", label="Manage Outputs", icon="➕")
+    st.sidebar.page_link("pages/21_Change_Region_Status.py", label="Change Region Status", icon="🔄")
+    st.sidebar.page_link("pages/22_Revoke_User_Access.py", label="Revoke User Access", icon="🚫")
 
 
 # --------------------------------Links Function -----------------------------------------------
@@ -115,7 +119,6 @@ def SideBarLinks(show_home=False):
             st.sidebar.page_link("pages/43_Anya_ABTest_Analytics.py", label="A/B Test Analytics", icon="🧪")
 
 
-    
     AboutPageNav()
 
     if st.session_state["authenticated"]:

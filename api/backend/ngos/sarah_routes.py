@@ -7,7 +7,8 @@ from flask import current_app
 sarah = Blueprint("sarah", __name__)
 
 
-# ex: /sarah/jobs
+
+# ui
 @sarah.route("/jobs", methods=["GET"])
 def get_all_jobs():
     try:
@@ -29,25 +30,9 @@ def get_all_jobs():
         return jsonify({"error": str(e)}), 500
 
 
-# ex: /sarah/jobs/job_001
-@sarah.route("/jobs/<string:job_id>", methods=["GET"])
-def get_job(job_id):
-    try:
-        cursor = db.get_db().cursor()
-
-        # Get job details
-        cursor.execute("SELECT * FROM Job WHERE JobID = %s", (job_id,))
-        job = cursor.fetchone()
-
-        if not job:
-            return jsonify({"error": "Job not found"}), 404
-
-        cursor.close()
-        return jsonify(job), 200
-    except Error as e:
-        return jsonify({"error": str(e)}), 500
 
 
+#in ui
 # ex: /sarah/jobs/search/Engineer
 @sarah.route("/jobs/search/<string:keyword>", methods=["GET"])
 def get_jobs_by_keyword(keyword):
@@ -69,7 +54,7 @@ def get_jobs_by_keyword(keyword):
     except Error as e:
         return jsonify({"error": str(e)}), 500
 
-
+#in ui
 @sarah.route("/users/<string:user_id>", methods=["GET"])
 def get_user_email_and_resume(user_id):
     try:
@@ -121,6 +106,7 @@ def get_all_resumes():
     except Error as e:
         return jsonify({"error": str(e)}), 500
     
+
 @sarah.route("/users/<string:user_id>", methods=["PUT"])
 def update_user_profile(user_id):
     try:
@@ -160,7 +146,7 @@ def update_user_profile(user_id):
     except Error as e:
         return jsonify({"error": str(e)}), 500
     
-
+#UI 
 @sarah.route("/documents", methods=["POST"])
 def create_document():
     try:

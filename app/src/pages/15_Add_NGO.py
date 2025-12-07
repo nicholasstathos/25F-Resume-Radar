@@ -5,100 +5,55 @@ from modules.nav import SideBarLinks
 
 # Initialize sidebar
 SideBarLinks()
+st.title(f"Welcome Admin {st.session_state['first_name']}")
 
-st.title("Add New NGO")
+st.write('### System Administration Dashboard')
 
-# Initialize session state for modal
-if "show_success_modal" not in st.session_state:
-    st.session_state.show_success_modal = False
-if "success_ngo_name" not in st.session_state:
-    st.session_state.success_ngo_name = ""
-if "reset_form" not in st.session_state:
-    st.session_state.reset_form = False
-if "form_key_counter" not in st.session_state:
-    st.session_state.form_key_counter = 0
 
-# Define the success dialog function
-@st.dialog("Success")
-def show_success_dialog(ngo_name):
-    st.markdown(f"### {ngo_name} has been successfully added to the system!")
+st.markdown("---")
+st.markdown("### Master Switch")
+st.warning("The Nuclear Button will turn all LLM outputs to snowlike ash. This action is irreversible (unless you rebuild the database in the demo....)")
+
+confirm = st.checkbox("I understand this will delete all cached outputs permanently")
+
+st.markdown("""
+<style>
+div.stButton > button[kind="secondary"] {
+    background-color: #ff0000;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 20px 40px;
+    border: 3px solid #990000;
+    border-radius: 10px;
+    width: 100%;
+}
+div.stButton > button[kind="secondary"]:hover {
+    background-color: #cc0000;
+    border: 3px solid #660000;
+}
+</style>
+""", unsafe_allow_html=True)
+
+if st.button("NUCLEAR BUTTON - DELETE ALL OUTPUTS", 
+             type="secondary",
+             disabled=not confirm,
+             use_container_width=True):
     
-    # Create two buttons side by side
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        if st.button("Return to NGO Directory", use_container_width=True):
-            st.session_state.show_success_modal = False
-            st.session_state.success_ngo_name = ""
-            st.switch_page("pages/14_NGO_Directory.py")
-    
-    with col2:
-        if st.button("Add Another NGO", use_container_width=True):
-            st.session_state.show_success_modal = False
-            st.session_state.success_ngo_name = ""
-            st.session_state.reset_form = True
-            st.rerun()
+    with st.spinner("☢️ Initiating nuclear protocol..."):
+        try:
+            response = requests.delete("http://host.docker.internal:4000/jason/nuclear-button")
+            
+            if response.status_code == 200:
+                data = response.json()
+                st.success(f"✅ {data.get('outputs_destroyed', 0)} {data.get('message', 'Success')}")
+                st.snow()
+            else:
+                st.error(f"❌ Failed to execute nuclear button. Status code: {response.status_code}")
+                
+        except requests.exceptions.ConnectionError:
+            st.error("❌ Cannot connect to API server on port 4000")
+        except Exception as e:
+            st.error(f"❌ Error: {str(e)}")
 
-# Handle form reset
-if st.session_state.reset_form:
-    st.session_state.form_key_counter += 1
-    st.session_state.reset_form = False
-
-# API endpoint
-API_URL = "http://web-api:4000/ngo/ngos"
-
-# Create a form for NGO details with dynamic key to force reset
-with st.form(f"add_ngo_form_{st.session_state.form_key_counter}"):
-    st.subheader("NGO Information")
-
-    # Required fields
-    name = st.text_input("Organization Name *")
-    country = st.text_input("Country *")
-    founding_year = st.number_input(
-        "Founding Year *", min_value=1800, max_value=2024, value=2024
-    )
-    focus_area = st.text_input("Focus Area *")
-    website = st.text_input("Website URL *")
-
-    # Form submission button
-    submitted = st.form_submit_button("Add NGO")
-
-    if submitted:
-        # Validate required fields
-        if not all([name, country, founding_year, focus_area, website]):
-            st.error("Please fill in all required fields marked with *")
-        else:
-            # Prepare the data for API
-            ngo_data = {
-                "Name": name,
-                "Country": country,
-                "Founding_Year": int(founding_year),
-                "Focus_Area": focus_area,
-                "Website": website,
-            }
-
-            try:
-                # Send POST request to API
-                response = requests.post(API_URL, json=ngo_data)
-
-                if response.status_code == 201:
-                    # Store NGO name and show modal
-                    st.session_state.show_success_modal = True
-                    st.session_state.success_ngo_name = name
-                    st.rerun()
-                else:
-                    st.error(
-                        f"Failed to add NGO: {response.json().get('error', 'Unknown error')}"
-                    )
-
-            except requests.exceptions.RequestException as e:
-                st.error(f"Error connecting to the API: {str(e)}")
-                st.info("Please ensure the API server is running")
-
-# Show success modal if NGO was added successfully
-if st.session_state.show_success_modal:
-    show_success_dialog(st.session_state.success_ngo_name)
-
-# Add a button to return to the NGO Directory
-if st.button("Return to NGO Directory"):
-    st.switch_page("pages/14_NGO_Directory.py")
+st.markdown("---")
