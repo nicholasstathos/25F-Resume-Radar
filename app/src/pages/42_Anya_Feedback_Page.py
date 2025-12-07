@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import pandas as pd
 
-API_BASE = "http://127.0.0.1:4000/anya"
+API_BASE = "http://host.docker.internal:4000/anya"
 
 
 st.title("Anya – User Feedback Dashboard")

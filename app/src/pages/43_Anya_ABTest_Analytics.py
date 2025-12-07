@@ -5,7 +5,7 @@ import plotly.express as px
 
 st.set_page_config(layout="wide")
 
-API_BASE = "http://127.0.0.1:4000/anya"
+API_BASE = "http://host.docker.internal:4000/anya"
 
 
 

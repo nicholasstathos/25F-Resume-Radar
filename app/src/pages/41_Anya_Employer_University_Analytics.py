@@ -3,7 +3,7 @@ import requests
 import pandas as pd
 import plotly.express as px
 
-API_BASE = "http://127.0.0.1:4000/anya"
+API_BASE = "http://host.docker.internal:4000/anya"
 
 
 def fetch_data(endpoint):
