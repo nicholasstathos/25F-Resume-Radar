@@ -109,6 +109,11 @@ def SideBarLinks(show_home=False):
             AdminPageNav()
         if st.session_state["role"] == "Analyst":
             st.sidebar.page_link("pages/40_Anya_Home.py", label="Analyst Home", icon="📊")
+            st.sidebar.page_link("pages/40_Anya_Hallucination_Analytics.py", label="Hallucination Analytics", icon="🧠")
+            st.sidebar.page_link("pages/41_Anya_Employer_University_Analytics.py", label="Employer & University Analytics", icon="🏫")
+            st.sidebar.page_link("pages/42_Anya_Feedback_Page.py", label="Feedback Dashboard", icon="💬")
+            st.sidebar.page_link("pages/43_Anya_ABTest_Analytics.py", label="A/B Test Analytics", icon="🧪")
+
 
     
     AboutPageNav()

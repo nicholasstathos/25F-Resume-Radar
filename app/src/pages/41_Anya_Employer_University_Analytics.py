@@ -8,44 +8,32 @@ API_BASE = "http://127.0.0.1:4000/anya"
 
 def fetch_data(endpoint):
     try:
-        response = requests.get(f"{API_BASE}/{endpoint}")
-        response.raise_for_status()
-        return response.json()
+        r = requests.get(f"{API_BASE}/{endpoint}")
+        r.raise_for_status()
+        return r.json(), None
     except Exception as e:
-        st.error(f"Failed to load data: {e}")
-        return None
+        return None, str(e)
 
+st.title("Anya – Employer & University Analytics")
 
-st.title("Employer & University Analytics")
-st.write("Analyze resume quality grouped by employers and universities.")
+# Employers
+st.subheader("Top Employers")
+employer_data, employer_err = fetch_data("employers")
 
-
-
-st.subheader("Employer Resume Scores")
-
-employers = fetch_data("employers")
-
-if employers:
-    df_emp = pd.DataFrame(employers)
-    fig_emp = px.bar(df_emp, x="employer", y="avg_score",
-                     title="Average Resume Score by Employer",
-                     labels={"avg_score": "Average Score"})
-    st.plotly_chart(fig_emp, use_container_width=True)
+if employer_err:
+    st.error(f"Error loading employer analytics: {employer_err}")
 else:
-    st.warning("No employer analytics available.")
+    df_emp = pd.DataFrame(employer_data)
+    fig_emp = px.bar(df_emp, x="employer", y="avg_score")
+    st.plotly_chart(fig_emp)
 
+# Universities
+st.subheader("Top Universities")
+uni_data, uni_err = fetch_data("universities")
 
-
-st.subheader("University Resume Scores")
-
-universities = fetch_data("universities")
-
-if universities:
-    df_uni = pd.DataFrame(universities)
-    fig_uni = px.bar(df_uni, x="university", y="avg_score",
-                     title="Average Resume Score by University",
-                     labels={"avg_score": "Average Score"})
-    st.plotly_chart(fig_uni, use_container_width=True)
+if uni_err:
+    st.error(f"Error loading university analytics: {uni_err}")
 else:
-    st.warning("No university analytics available.")
-
+    df_uni = pd.DataFrame(uni_data)
+    fig_uni = px.bar(df_uni, x="university", y="avg_score")
+    st.plotly_chart(fig_uni)

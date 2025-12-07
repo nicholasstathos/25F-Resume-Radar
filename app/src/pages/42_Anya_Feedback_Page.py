@@ -5,50 +5,51 @@ import pandas as pd
 API_BASE = "http://127.0.0.1:4000/anya"
 
 
+st.title("Anya – User Feedback Dashboard")
+
+
 def get_feedback():
     try:
-        response = requests.get(f"{API_BASE}/feedback")
-        response.raise_for_status()
-        return response.json()
+        r = requests.get(f"{API_BASE}/feedback")
+        r.raise_for_status()
+        return r.json(), None
     except Exception as e:
-        st.error(f"Failed to load feedback: {e}")
-        return []
+        return None, str(e)
 
 
-def submit_feedback(text):
+def send_feedback(message, user="Anya"):
     try:
-        response = requests.post(f"{API_BASE}/feedback", json={"feedback": text})
-        response.raise_for_status()
-        return True
+        body = {"message": message, "user": user}
+        r = requests.post(f"{API_BASE}/feedback", json=body)
+        r.raise_for_status()
+        return True, None
     except Exception as e:
-        st.error(f"Failed to submit feedback: {e}")
-        return False
-
-
-st.title("Feedback Viewer & Submission")
-st.write("Review student feedback and submit new entries.")
-
-
-st.subheader("Existing Feedback")
-
-feedback = get_feedback()
-
-if feedback:
-    df = pd.DataFrame(feedback)
-    st.table(df)
-else:
-    st.info("No feedback available yet.")
-
-
+        return False, str(e)
 
 st.subheader("Submit New Feedback")
 
-new_feedback = st.text_area("Enter feedback:")
+feedback_text = st.text_area("Write feedback:", height=120)
 
-if st.button("Submit"):
-    if new_feedback.strip():
-        if submit_feedback(new_feedback):
-            st.success("Feedback submitted successfully!")
-            st.rerun()
+if st.button("Submit Feedback", type="primary"):
+    if not feedback_text.strip():
+        st.error("Message cannot be empty.")
     else:
-        st.warning("Feedback cannot be empty.")
+        ok, err = send_feedback(feedback_text)
+        if ok:
+            st.success("Feedback submitted successfully!")
+        else:
+            st.error(f"Error submitting feedback: {err}")
+
+
+st.subheader("All Feedback Messages")
+
+data, err = get_feedback()
+
+if err:
+    st.error(f"Could not load feedback: {err}")
+else:
+    if len(data) == 0:
+        st.info("No feedback submitted yet.")
+    else:
+        df = pd.DataFrame(data)
+        st.dataframe(df, use_container_width=True)
