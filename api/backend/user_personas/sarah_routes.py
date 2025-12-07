@@ -3,7 +3,6 @@ from backend.db_connection import db
 from mysql.connector import Error
 from flask import current_app
 
-# BluePrint for the sarah persona (job matching)
 sarah = Blueprint("sarah", __name__)
 
 
@@ -91,18 +90,6 @@ def get_user_email_and_resume(user_id):
         }
         
         return jsonify(response), 200
-    except Error as e:
-        return jsonify({"error": str(e)}), 500
-    
-
-@sarah.route("/resume", methods=["GET"])
-def get_all_resumes():
-    try:
-        cursor = db.get_db().cursor()
-        cursor.execute("SELECT * FROM Resume LIMIT 1")
-        resumes = cursor.fetchall()
-        cursor.close()
-        return jsonify(resumes), 200
     except Error as e:
         return jsonify({"error": str(e)}), 500
     

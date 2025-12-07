@@ -17,6 +17,7 @@ def AboutPageNav():
 def sarahNav():
     st.sidebar.page_link("pages/02_Resume_Output.py", label="Our Feedback", icon="🧠")
     st.sidebar.page_link("pages/13_Job_Search.py", label="Job Search Tool", icon="🔍")
+    st.sidebar.page_link("pages/03_Update_Profile.py", label="Update Profile", icon="🔨")
     st.sidebar.page_link("pages/04_All_Jobs.py", label="All Jobs", icon="🕵")
     st.sidebar.page_link("pages/10_sarah_import_resume.py", label="Add Document", icon="📄")
 
@@ -24,26 +25,10 @@ def sarahNav():
 #### ------------------------ Examples for Role of pol_strat_advisor ------------------------
 def PolStratAdvHomeNav():
     st.sidebar.page_link(
-        "pages/00_Pol_Strat_Home.py", label="Political Strategist Home", icon="👤"
+        "pages/01_Resume_Input.py", label="Political Strategist Home", icon="👤"
     )
 
 
-def WorldBankVizNav():
-    st.sidebar.page_link(
-        "pages/01_World_Bank_Viz.py", label="World Bank Visualization", icon="🏦"
-    )
-
-
-def MapDemoNav():
-    st.sidebar.page_link("pages/02_Map_Demo.py", label="Map Demonstration", icon="🗺️")
-
-
-## ------------------------ Examples for Role of usaid_worker ------------------------
-
-def usaidWorkerHomeNav():
-    st.sidebar.page_link(
-      "pages/10_USAID_Worker_Home.py", label="USAID Worker Home", icon="🏠"
-    )
 
 def NgoDirectoryNav():
     st.sidebar.page_link("pages/14_NGO_Directory.py", label="NGO Directory", icon="📁")
@@ -72,9 +57,9 @@ def ClassificationNav():
 def AdminPageNav():
     st.sidebar.page_link("pages/20_Admin_Home.py", label="System Admin", icon="🖥️")
     st.sidebar.page_link(
-        "pages/21_ML_Model_Mgmt.py", label="User Activity Search", icon="🏢"
+        "pages/21_User_Activity.py", label="User Activity Search", icon="🏢"
     )
-    st.sidebar.page_link("pages/15_Add_NGO.py", label="Manage Outputs", icon="➕")
+    st.sidebar.page_link("pages/15_Nuke.py", label="Manage Outputs", icon="➕")
     st.sidebar.page_link("pages/21_Change_Region_Status.py", label="Change Region Status", icon="🔄")
     st.sidebar.page_link("pages/22_Revoke_User_Access.py", label="Revoke User Access", icon="🚫")
 
