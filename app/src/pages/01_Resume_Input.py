@@ -12,7 +12,7 @@ SideBarLinks()
 st.title(f"Thanks, {st.session_state['first_name']}!")
 st.write('')
 st.write('')
-st.write("### Here's what we thought of your resume!")
+st.write("### Press the button below to get feedback on your resume!")
 
 
 

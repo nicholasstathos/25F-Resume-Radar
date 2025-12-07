@@ -106,7 +106,7 @@ def get_all_resumes():
     except Error as e:
         return jsonify({"error": str(e)}), 500
     
-
+#UI
 @sarah.route("/users/<string:user_id>", methods=["PUT"])
 def update_user_profile(user_id):
     try:
