@@ -1,5 +1,9 @@
 import streamlit as st
 
+from modules.nav import SideBarLinks
+
+SideBarLinks()
+
 st.title("Anya: Data Analyst Home")
 
 st.write("Select an analytics feature:")

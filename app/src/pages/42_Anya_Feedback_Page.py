@@ -1,8 +1,11 @@
 import streamlit as st
 import requests
 import pandas as pd
+from modules.nav import SideBarLinks
 
 API_BASE = "http://host.docker.internal:4000/anya"
+
+SideBarLinks()
 
 
 st.title("Anya – User Feedback Dashboard")

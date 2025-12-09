@@ -3,7 +3,11 @@ import requests
 import pandas as pd
 import plotly.express as px
 
+from modules.nav import SideBarLinks
+
 API_BASE = "http://host.docker.internal:4000/anya"
+
+SideBarLinks()
 
 
 def fetch_data(endpoint):

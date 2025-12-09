@@ -1,7 +1,7 @@
 USE cs3200_project_1;
 
 INSERT INTO User (UserID, Name, Email) VALUES
-('1', 'fkarlicek0', 'tbrashier0@ebay.co.uk'),
+('1', 'Sarah Cunningham', 's.cunninghame@northeastern.edu'),
 ('2', 'mduffet1', 'clamberto1@bbb.org'),
 ('3', 'mcaldecutt2', 'gdron2@eventbrite.com'),
 ('4', 'crosendorf3', 'cmurrie3@abc.net.au'),
