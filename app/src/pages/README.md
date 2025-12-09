@@ -4,7 +4,7 @@ This document organizes the application pages by user persona.
 
 ---
 
-## 📋 Sarah - Job Seeker Persona
+## Sarah - Job Seeker Persona
 
 Sarah is a job seeker who needs to manage her resume, search for jobs, and track applications.
 
@@ -19,7 +19,7 @@ Sarah is a job seeker who needs to manage her resume, search for jobs, and track
 
 ---
 
-## 🔧 Jason - System Administrator Persona
+## Jason - System Administrator Persona
 
 Jason is a system administrator who manages users, monitors activity, and maintains system integrity.
 
@@ -33,7 +33,7 @@ Jason is a system administrator who manages users, monitors activity, and mainta
 
 ---
 
-## 📊 Anya - Data Analyst Persona
+## Anya - Data Analyst Persona
 
 Anya is a data analyst who reviews system analytics, A/B tests, and feedback to improve the platform.
 
@@ -47,7 +47,7 @@ Anya is a data analyst who reviews system analytics, A/B tests, and feedback to 
 
 ---
 
-## 🌐 General Pages
+## General Pages
 
 Pages accessible to all users or for general application functionality.
 
